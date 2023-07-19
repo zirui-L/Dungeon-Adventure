@@ -4,6 +4,11 @@ import dungeonmania.Game;
 import dungeonmania.battles.BattleStatistics;
 
 public class Shield extends Buildable {
+    public static final double SHIELD_DAMAGE_MAGNIFIER = 1;
+    public static final double SHIELD_DAMAGE_REDUCER = 1;
+    public static final double DEFAULT_HEALTH = 0;
+    public static final double DEFAULT_ATTACK = 0;
+
     private int durability;
     private double defence;
 
@@ -23,7 +28,8 @@ public class Shield extends Buildable {
 
     @Override
     public BattleStatistics applyBuff(BattleStatistics origin) {
-        return BattleStatistics.applyBuff(origin, new BattleStatistics(0, 0, defence, 1, 1));
+        return BattleStatistics.applyBuff(origin, new BattleStatistics(DEFAULT_HEALTH, DEFAULT_ATTACK, defence,
+                SHIELD_DAMAGE_MAGNIFIER, SHIELD_DAMAGE_REDUCER));
     }
 
     @Override

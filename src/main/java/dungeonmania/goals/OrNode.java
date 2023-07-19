@@ -5,6 +5,7 @@ import dungeonmania.Game;
 public class OrNode extends CompoundNode {
     public OrNode(Goal left, Goal right) {
         super(left, right);
+        this.setType("OR");
     }
 
     public boolean achieved(Game game) {

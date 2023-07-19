@@ -21,6 +21,10 @@ public abstract class CompoundNode implements Goal {
         return right;
     }
 
+    public void setType(String type) {
+        this.type = type;
+    }
+
     public String toString(Game game) {
         if (this.achieved(game))
             return "";
