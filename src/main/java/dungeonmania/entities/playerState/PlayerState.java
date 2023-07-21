@@ -1,33 +1,21 @@
 package dungeonmania.entities.playerState;
-
-import dungeonmania.entities.Player;
+import dungeonmania.entities.collectables.potions.InvincibilityPotion;
+import dungeonmania.entities.collectables.potions.Potion;
 
 public abstract class PlayerState {
-    private Player player;
-    private boolean isInvincible = false;
-    private boolean isInvisible = false;
-
-    PlayerState(Player player, boolean isInvincible, boolean isInvisible) {
-        this.player = player;
-        this.isInvincible = isInvincible;
-        this.isInvisible = isInvisible;
+    public PlayerState changeState() {
+            return new BaseState();
     }
 
-    public boolean isInvincible() {
-        return isInvincible;
-    };
-
-    public boolean isInvisible() {
-        return isInvisible;
-    };
-
-    public Player getPlayer() {
-        return player;
+    public PlayerState changeState(Potion potion, int duration) {
+        if (potion instanceof InvincibilityPotion) {
+            return new InvincibleState(duration);
+        }
+        return new InvisibleState(duration);
     }
 
-    public abstract void transitionInvisible();
 
-    public abstract void transitionInvincible();
-
-    public abstract void transitionBase();
+    public boolean ifNextTrigger() {
+        return true;
+    }
 }
