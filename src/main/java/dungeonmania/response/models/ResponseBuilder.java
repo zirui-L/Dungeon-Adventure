@@ -20,6 +20,7 @@ public class ResponseBuilder {
         game.getMap().getEntities().forEach(e -> {
             entityResponse.add(ResponseBuilder.getEntityResponse(game, e));
         });
+
         return new DungeonResponse(game.getId(), game.getName(), entityResponse,
                 (game.getPlayer() != null) ? getInventoryResponse(game.getPlayer().getInventory()) : null,
                 game.getBattleFacade().getBattleResponses(),

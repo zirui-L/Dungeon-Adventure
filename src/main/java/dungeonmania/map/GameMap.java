@@ -240,6 +240,13 @@ public class GameMap {
         return entities;
     }
 
+    public int getSpawnerNumber() {
+        List<Entity> entities = getEntities();
+
+        return (int) entities.stream().filter(entity -> entity instanceof ZombieToastSpawner).count();
+
+    }
+
     public <T extends Entity> List<T> getEntities(Class<T> type) {
         return getEntities().stream().filter(type::isInstance).map(type::cast).collect(Collectors.toList());
     }

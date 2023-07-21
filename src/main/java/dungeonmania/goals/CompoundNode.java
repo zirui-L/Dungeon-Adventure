@@ -25,6 +25,7 @@ public abstract class CompoundNode implements Goal {
         this.type = type;
     }
 
+    @Override
     public String toString(Game game) {
         if (this.achieved(game))
             return "";

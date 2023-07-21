@@ -14,7 +14,6 @@ public class TreasureGoal extends VariableNode {
     public boolean achieved(Game game) {
         if (game.getPlayer() == null)
             return false;
-
         return game.getCollectedTreasureCount() >= target;
     }
 }

@@ -18,6 +18,7 @@ public final class DungeonResponse {
 
     public DungeonResponse(String dungeonId, String dungeonName, List<EntityResponse> entities,
             List<ItemResponse> inventory, List<BattleResponse> battles, List<String> buildables, String goals) {
+
         this(dungeonId, dungeonName, entities, inventory, battles, buildables, goals, new ArrayList<>());
     }
 

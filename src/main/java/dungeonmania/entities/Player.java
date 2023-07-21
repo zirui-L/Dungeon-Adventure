@@ -30,6 +30,7 @@ public class Player extends Entity implements Battleable {
     private int nextTrigger = 0;
 
     private int collectedTreasureCount = 0;
+    private int killedEnemyCount = 0;
 
     private PlayerState state;
 
@@ -43,6 +44,14 @@ public class Player extends Entity implements Battleable {
 
     public int getCollectedTreasureCount() {
         return collectedTreasureCount;
+    }
+
+    public int getKilledEnemyCount() {
+        return killedEnemyCount;
+    }
+
+    public void incrementKilledEnemyCount() {
+        killedEnemyCount++;
     }
 
     public boolean hasWeapon() {
