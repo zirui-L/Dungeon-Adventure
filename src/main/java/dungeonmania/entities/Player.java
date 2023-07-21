@@ -1,3 +1,4 @@
+
 package dungeonmania.entities;
 
 import java.util.LinkedList;
@@ -9,7 +10,6 @@ import dungeonmania.battles.Battleable;
 import dungeonmania.entities.collectables.Bomb;
 import dungeonmania.entities.collectables.Treasure;
 import dungeonmania.entities.collectables.potions.InvincibilityPotion;
-import dungeonmania.entities.collectables.potions.InvisibilityPotion;
 import dungeonmania.entities.collectables.potions.Potion;
 import dungeonmania.entities.enemies.Enemy;
 import dungeonmania.entities.enemies.Mercenary;
@@ -30,27 +30,31 @@ public class Player extends Entity implements Battleable {
     private Inventory inventory;
     private Queue<Potion> queue = new LinkedList<>();
     private Potion inEffective = null;
-    private Direction facing;
+    private int nextTrigger = 0;
 
     private int collectedTreasureCount = 0;
+    private int killedEnemyCount = 0;
 
     private PlayerState state;
 
     public Player(Position position, double health, double attack) {
         super(position);
-        battleStatistics = new BattleStatistics(
-                health,
-                attack,
-                0,
-                BattleStatistics.DEFAULT_DAMAGE_MAGNIFIER,
+        battleStatistics = new BattleStatistics(health, attack, 0, BattleStatistics.DEFAULT_DAMAGE_MAGNIFIER,
                 BattleStatistics.DEFAULT_PLAYER_DAMAGE_REDUCER);
         inventory = new Inventory();
         state = new BaseState();
-        facing = null;
     }
 
     public int getCollectedTreasureCount() {
         return collectedTreasureCount;
+    }
+
+    public int getKilledEnemyCount() {
+        return killedEnemyCount;
+    }
+
+    public void incrementKilledEnemyCount() {
+        killedEnemyCount++;
     }
 
     public boolean hasWeapon() {
@@ -67,12 +71,13 @@ public class Player extends Entity implements Battleable {
 
     public boolean build(String entity, EntityFactory factory) {
         InventoryItem item = inventory.checkBuildCriteria(this, true, entity.equals("shield"), factory);
-        if (item == null) return false;
+        if (item == null)
+            return false;
         return inventory.add(item);
     }
 
     public void move(GameMap map, Direction direction) {
-        facing = direction;
+        this.setFacing(direction);
         map.moveTo(this, Position.translateBy(this.getPosition(), direction));
     }
 
@@ -80,7 +85,8 @@ public class Player extends Entity implements Battleable {
     public void onOverlap(GameMap map, Entity entity) {
         if (entity instanceof Enemy) {
             if (entity instanceof Mercenary) {
-                if (((Mercenary) entity).isAllied()) return;
+                if (((Mercenary) entity).isAllied())
+                    return;
             }
             map.getGame().battle(this, (Enemy) entity);
         }
@@ -96,7 +102,8 @@ public class Player extends Entity implements Battleable {
     }
 
     public boolean pickUp(Entity item) {
-        if (item instanceof Treasure) collectedTreasureCount++;
+        if (item instanceof Treasure)
+            collectedTreasureCount++;
         return inventory.add((InventoryItem) item);
     }
 
@@ -110,7 +117,8 @@ public class Player extends Entity implements Battleable {
 
     public <T extends InventoryItem> void use(Class<T> itemType) {
         T item = inventory.getFirst(itemType);
-        if (item != null) inventory.remove(item);
+        if (item != null)
+            inventory.remove(item);
     }
 
     public void use(Bomb bomb, GameMap map) {
@@ -157,28 +165,11 @@ public class Player extends Entity implements Battleable {
 
     public BattleStatistics applyBuff(BattleStatistics origin) {
         if (state instanceof InvincibleState) {
-            return BattleStatistics.applyBuff(origin, new BattleStatistics(
-                0,
-                0,
-                0,
-                1,
-                1,
-                true,
-                true));
+            return BattleStatistics.applyBuff(origin, new BattleStatistics(0, 0, 0, 1, 1, true, true));
         } else if (state instanceof InvisibleState) {
-            return BattleStatistics.applyBuff(origin, new BattleStatistics(
-                0,
-                0,
-                0,
-                1,
-                1,
-                false,
-                false));
+            return BattleStatistics.applyBuff(origin, new BattleStatistics(0, 0, 0, 1, 1, false, false));
         }
         return origin;
     }
 
-    public Direction getFacing() {
-        return this.facing;
-    }
 }
