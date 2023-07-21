@@ -8,7 +8,7 @@ public class BaseState extends PlayerState {
     public PlayerState changeState() {
         return this;
     }
-    
+
     @Override
     public PlayerState changeState(Potion potion, int duration) {
         if (potion instanceof InvincibilityPotion) {
