@@ -1,3 +1,4 @@
+
 package dungeonmania.entities;
 
 import java.util.LinkedList;
@@ -8,13 +9,14 @@ import dungeonmania.battles.BattleStatistics;
 import dungeonmania.battles.Battleable;
 import dungeonmania.entities.collectables.Bomb;
 import dungeonmania.entities.collectables.Treasure;
-import dungeonmania.entities.collectables.potions.InvincibilityPotion;
 import dungeonmania.entities.collectables.potions.Potion;
 import dungeonmania.entities.enemies.Enemy;
 import dungeonmania.entities.enemies.Mercenary;
 import dungeonmania.entities.inventory.Inventory;
 import dungeonmania.entities.inventory.InventoryItem;
 import dungeonmania.entities.playerState.BaseState;
+import dungeonmania.entities.playerState.InvincibleState;
+import dungeonmania.entities.playerState.InvisibleState;
 import dungeonmania.entities.playerState.PlayerState;
 import dungeonmania.map.GameMap;
 import dungeonmania.util.Direction;
@@ -39,7 +41,7 @@ public class Player extends Entity implements Battleable {
         battleStatistics = new BattleStatistics(health, attack, 0, BattleStatistics.DEFAULT_DAMAGE_MAGNIFIER,
                 BattleStatistics.DEFAULT_PLAYER_DAMAGE_REDUCER);
         inventory = new Inventory();
-        state = new BaseState(this);
+        state = new BaseState();
     }
 
     public int getCollectedTreasureCount() {
@@ -123,19 +125,14 @@ public class Player extends Entity implements Battleable {
         bomb.onPutDown(map, getPosition());
     }
 
-    public void triggerNext(int currentTick) {
+    public void triggerNext() {
+        if (!state.ifNextTrigger()) return;
         if (queue.isEmpty()) {
-            inEffective = null;
-            state.transitionBase();
-            return;
-        }
-        inEffective = queue.remove();
-        if (inEffective instanceof InvincibilityPotion) {
-            state.transitionInvincible();
+            changeState(state.changeState());
         } else {
-            state.transitionInvisible();
+            inEffective = queue.remove();
+            changeState(state.changeState(inEffective, inEffective.getDuration()));
         }
-        nextTrigger = currentTick + inEffective.getDuration();
     }
 
     public void changeState(PlayerState playerState) {
@@ -145,15 +142,11 @@ public class Player extends Entity implements Battleable {
     public void use(Potion potion, int tick) {
         inventory.remove(potion);
         queue.add(potion);
-        if (inEffective == null) {
-            triggerNext(tick);
-        }
+        triggerNext();
     }
 
     public void onTick(int tick) {
-        if (inEffective == null || tick == nextTrigger) {
-            triggerNext(tick);
-        }
+        triggerNext();
     }
 
     public void remove(InventoryItem item) {
@@ -170,9 +163,9 @@ public class Player extends Entity implements Battleable {
     }
 
     public BattleStatistics applyBuff(BattleStatistics origin) {
-        if (state.isInvincible()) {
+        if (state instanceof InvincibleState) {
             return BattleStatistics.applyBuff(origin, new BattleStatistics(0, 0, 0, 1, 1, true, true));
-        } else if (state.isInvisible()) {
+        } else if (state instanceof InvisibleState) {
             return BattleStatistics.applyBuff(origin, new BattleStatistics(0, 0, 0, 1, 1, false, false));
         }
         return origin;
