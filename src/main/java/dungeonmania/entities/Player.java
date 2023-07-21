@@ -29,7 +29,7 @@ public class Player extends Entity implements Battleable {
     private Inventory inventory;
     private Queue<Potion> queue = new LinkedList<>();
     private Potion inEffective = null;
-    private int nextTrigger = 0;
+    private Direction facing;
 
     private int collectedTreasureCount = 0;
     private int killedEnemyCount = 0;
@@ -42,6 +42,7 @@ public class Player extends Entity implements Battleable {
                 BattleStatistics.DEFAULT_PLAYER_DAMAGE_REDUCER);
         inventory = new Inventory();
         state = new BaseState();
+        facing = null;
     }
 
     public int getCollectedTreasureCount() {
@@ -76,7 +77,7 @@ public class Player extends Entity implements Battleable {
     }
 
     public void move(GameMap map, Direction direction) {
-        this.setFacing(direction);
+        facing = direction;
         map.moveTo(this, Position.translateBy(this.getPosition(), direction));
     }
 
@@ -169,6 +170,10 @@ public class Player extends Entity implements Battleable {
             return BattleStatistics.applyBuff(origin, new BattleStatistics(0, 0, 0, 1, 1, false, false));
         }
         return origin;
+    }
+
+    public Direction getFacing() {
+        return facing;
     }
 
 }
