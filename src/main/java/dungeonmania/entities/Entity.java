@@ -15,7 +15,6 @@ public abstract class Entity {
     private Position position;
     private Position previousPosition;
     private Position previousDistinctPosition;
-    private Direction facing;
     private String entityId;
 
     public Entity(Position position) {
@@ -23,7 +22,6 @@ public abstract class Entity {
         this.previousPosition = position;
         this.previousDistinctPosition = null;
         this.entityId = UUID.randomUUID().toString();
-        this.facing = null;
     }
 
     public boolean canMoveOnto(GameMap map, Entity entity) {
@@ -80,13 +78,5 @@ public abstract class Entity {
         if (!previousPosition.equals(this.position)) {
             previousDistinctPosition = previousPosition;
         }
-    }
-
-    public void setFacing(Direction facing) {
-        this.facing = facing;
-    }
-
-    public Direction getFacing() {
-        return this.facing;
     }
 }
