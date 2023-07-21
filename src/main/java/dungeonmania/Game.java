@@ -82,6 +82,7 @@ public class Game {
         }
         if (enemy.getBattleStatistics().getHealth() <= 0) {
             map.destroyEntity(enemy);
+            player.incrementKilledEnemyCount();
         }
     }
 
@@ -194,6 +195,14 @@ public class Game {
 
     public int getCollectedTreasureCount() {
         return player.getCollectedTreasureCount();
+    }
+
+    public int getKilledEnemyCount() {
+        return player.getKilledEnemyCount();
+    }
+
+    public int getSpawnerNumber() {
+        return map.getSpawnerNumber();
     }
 
     public Player getPlayer() {

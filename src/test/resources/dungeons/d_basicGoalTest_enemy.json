@@ -86,5 +86,5 @@
       "type": "boulder"
     }
   ],
-  "goal-condition": { "goal": "exit" }
+  "goal-condition": { "goal": "enemies" }
 }
