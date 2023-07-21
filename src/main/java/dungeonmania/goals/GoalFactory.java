@@ -9,19 +9,22 @@ public class GoalFactory {
         switch (jsonGoal.getString("goal")) {
         case "AND":
             subgoals = jsonGoal.getJSONArray("subgoals");
-            return new Goal("AND", createGoal(subgoals.getJSONObject(0), config),
+            return new AndNode(createGoal(subgoals.getJSONObject(0), config),
                     createGoal(subgoals.getJSONObject(1), config));
         case "OR":
             subgoals = jsonGoal.getJSONArray("subgoals");
-            return new Goal("OR", createGoal(subgoals.getJSONObject(0), config),
+            return new OrNode(createGoal(subgoals.getJSONObject(0), config),
                     createGoal(subgoals.getJSONObject(1), config));
         case "exit":
-            return new Goal("exit");
+            return new ExitGoal();
         case "boulders":
-            return new Goal("boulders");
+            return new BouldersGoal();
         case "treasure":
             int treasureGoal = config.optInt("treasure_goal", 1);
-            return new Goal("treasure", treasureGoal);
+            return new TreasureGoal(treasureGoal);
+        case "enemies":
+            int enemyGoal = config.optInt("enemy_goal", 1);
+            return new EnemyGoal(enemyGoal);
         default:
             return null;
         }
