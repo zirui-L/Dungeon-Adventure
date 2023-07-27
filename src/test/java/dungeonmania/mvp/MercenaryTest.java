@@ -295,6 +295,53 @@ public class MercenaryTest {
         assertEquals(new Position(0, 2), getMercPos(res));
     }
 
+    @Test
+    @Tag("12-10")
+    @DisplayName("Test mercenary can be controlled with sceptre with duration")
+    public void sceptreMindControl() {
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame("d_mercenaryTest_sceptreMindControl", "c_mercenaryTest_sceptreMindControl");
+        String mercId = TestUtils.getEntitiesStream(res, "mercenary").findFirst().get().getId();
+
+        assertEquals(new Position(11, 1), getMercPos(res));
+        // collect materials to build sceptre
+        assertEquals(0, TestUtils.getInventory(res, "wood").size());
+        assertEquals(0, TestUtils.getInventory(res, "sun_stone").size());
+
+        // Pick up wood
+        res = dmc.tick(Direction.RIGHT);
+        assertEquals(new Position(10, 1), getMercPos(res));
+
+
+        // Pick up sun stone 1
+        res = dmc.tick(Direction.RIGHT);
+        assertEquals(new Position(9, 1), getMercPos(res));
+
+
+        // Pick up Sun Stone 2
+        res = dmc.tick(Direction.RIGHT);
+        assertEquals(new Position(8, 1), getMercPos(res));
+
+
+        // Build Sceptred
+        assertEquals(0, TestUtils.getInventory(res, "sceptre").size());
+        res = assertDoesNotThrow(() -> dmc.build("sceptre"));
+        assertEquals(1, TestUtils.getInventory(res, "sceptre").size());
+        assertEquals(new Position(7, 1), getMercPos(res));
+
+        // mind control
+        res = assertDoesNotThrow(() -> dmc.interact(mercId));
+        assertEquals(0, TestUtils.getInventory(res, "treasure").size());
+        assertEquals(new Position(6, 1), getMercPos(res));
+        
+        // player overlap with the Mercenery yet no battle
+        res = dmc.tick(Direction.RIGHT);
+        assertEquals(new Position(5, 1), getMercPos(res));
+        assertEquals(new Position(5, 1), getPlayerPos(res));
+        assertEquals(1, TestUtils.getEntities(res, "mercenary").size());
+        assertEquals(0, res.getBattles().size());
+    }
+
     private Position getPlayerPos(DungeonResponse res) {
         return TestUtils.getEntities(res, "player").get(0).getPosition();
     }

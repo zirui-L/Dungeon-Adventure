@@ -18,11 +18,8 @@
     "spider_spawn_interval": 0,
     "sword_attack": 2,
     "sword_durability": 2,
-    "treasure_goal": 1,
+    "treasure_goal": 3,
     "zombie_attack": 5,
     "zombie_health": 5,
-    "zombie_spawn_interval": 0,
-    "mind_control_duration": 3,
-    "midnight_armour_attack": 5,
-    "midnight_armour_defence": 5
+    "zombie_spawn_interval": 0
 }

@@ -12,6 +12,8 @@ import dungeonmania.entities.Player;
 import dungeonmania.entities.collectables.Bomb;
 import dungeonmania.entities.collectables.potions.Potion;
 import dungeonmania.entities.enemies.Enemy;
+import dungeonmania.entities.enemies.Mercenary;
+import dungeonmania.entities.enemies.ZombieToast;
 import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.goals.Goal;
 import dungeonmania.map.GameMap;
@@ -36,6 +38,8 @@ public class Game {
     public static final int SET_TRIGGER_ACTIVATED_TICK = 7;
     public static final int SET_TRIGGER_PREV_ACTIVATED = 8;
     public static final int NOTIFY_LOGIC_ITEMS = 9;
+    public static final int MERCENARY_UPDATE = 10;
+    public static final int ZOMBIE_NUMBER_UPDATE = 11;
 
     private ComparableCallback currentAction = null;
 
@@ -55,6 +59,12 @@ public class Game {
         this.tickCount = 0;
         player = map.getPlayer();
         register(() -> player.onTick(tickCount), PLAYER_MOVEMENT, "potionQueue");
+        register(() -> {
+            List<Mercenary> mercenaries = map.getEntities(Mercenary.class);
+            mercenaries.forEach(mercenary -> mercenary.updateControl());
+        }, MERCENARY_UPDATE, "mercenaryUpdate");
+        register(() -> player.setZombieNumber(map.getEntities(ZombieToast.class).size()), ZOMBIE_NUMBER_UPDATE,
+                                                                                                    "mercenaryUpdate");
     }
 
     public Game tick(Direction movementDirection) {

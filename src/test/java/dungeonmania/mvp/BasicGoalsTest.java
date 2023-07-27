@@ -122,4 +122,40 @@ public class BasicGoalsTest {
         // assert goal met
         assertEquals("", TestUtils.getGoals(res));
     }
+
+    @Test
+    @Tag("13-5")
+    @DisplayName("Test achieving a basic treasure goal with sun stone")
+    public void treasureWithSunStone() {
+        DungeonManiaController dmc;
+        dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame("d_basicGoalsTest_treasureWithSunStone", "c_basicGoalsTest_treasureWithSunStone");
+
+        // move player to right
+        res = dmc.tick(Direction.RIGHT);
+
+        // assert goal not met
+        assertTrue(TestUtils.getGoals(res).contains(":treasure"));
+
+        // collect treasure
+        res = dmc.tick(Direction.RIGHT);
+        assertEquals(1, TestUtils.getInventory(res, "treasure").size());
+
+        // assert goal not met
+        assertTrue(TestUtils.getGoals(res).contains(":treasure"));
+
+        // collect treasure
+        res = dmc.tick(Direction.RIGHT);
+        assertEquals(2, TestUtils.getInventory(res, "treasure").size());
+
+        // assert goal not met
+        assertTrue(TestUtils.getGoals(res).contains(":treasure"));
+
+        // collect sun stone
+        res = dmc.tick(Direction.RIGHT);
+        assertEquals(1, TestUtils.getInventory(res, "sun_stone").size());
+
+        // assert goal met
+        assertEquals("", TestUtils.getGoals(res));
+    }
 }

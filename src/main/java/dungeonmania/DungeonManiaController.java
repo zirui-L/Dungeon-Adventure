@@ -4,7 +4,9 @@ import java.util.List;
 
 import org.json.JSONException;
 
+import dungeonmania.entities.enemies.ZombieToast;
 import dungeonmania.exceptions.InvalidActionException;
+import dungeonmania.map.GameMap;
 import dungeonmania.response.models.DungeonResponse;
 import dungeonmania.response.models.ResponseBuilder;
 import dungeonmania.util.Direction;
@@ -87,6 +89,11 @@ public class DungeonManiaController {
         List<String> validBuildables = List.of("bow", "shield", "midnight_armour", "sceptre");
         if (!validBuildables.contains(buildable)) {
             throw new IllegalArgumentException("Only bow, shield, midnight_armour and sceptre can be built");
+        }
+        GameMap map = game.getMap();
+
+        if (buildable.equals("midnight_armour") && map.getEntities(ZombieToast.class).size() != 0) {
+            throw new InvalidActionException("There are zombies currently in the dungeon");
         }
 
         return ResponseBuilder.getDungeonResponse(game.build(buildable));

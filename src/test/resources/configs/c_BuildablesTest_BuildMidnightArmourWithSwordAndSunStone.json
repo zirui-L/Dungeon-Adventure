@@ -21,7 +21,7 @@
     "treasure_goal": 1,
     "zombie_attack": 5,
     "zombie_health": 5,
-    "zombie_spawn_interval": 0,
+    "zombie_spawn_interval": 2,
     "mind_control_duration": 3,
     "midnight_armour_attack": 5,
     "midnight_armour_defence": 5

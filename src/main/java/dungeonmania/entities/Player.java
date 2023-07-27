@@ -7,6 +7,7 @@ import java.util.Queue;
 
 import dungeonmania.battles.BattleStatistics;
 import dungeonmania.battles.Battleable;
+import dungeonmania.entities.buildables.Sceptre;
 import dungeonmania.entities.collectables.Bomb;
 import dungeonmania.entities.collectables.Treasure;
 import dungeonmania.entities.collectables.potions.Potion;
@@ -33,7 +34,7 @@ public class Player extends Entity implements Battleable {
 
     private int collectedTreasureCount = 0;
     private int killedEnemyCount = 0;
-
+    private int zombieNumber;
     private PlayerState state;
 
     public Player(Position position, double health, double attack) {
@@ -42,7 +43,6 @@ public class Player extends Entity implements Battleable {
                 BattleStatistics.DEFAULT_PLAYER_DAMAGE_REDUCER);
         inventory = new Inventory();
         state = new BaseState();
-        facing = null;
     }
 
     public int getCollectedTreasureCount() {
@@ -61,6 +61,14 @@ public class Player extends Entity implements Battleable {
         return inventory.hasWeapon();
     }
 
+    public boolean hasSceptre() {
+        return inventory.hasSceptre();
+    }
+
+    public Sceptre getSceptre() {
+        return inventory.getSceptre();
+    }
+
     public BattleItem getWeapon() {
         return inventory.getWeapon();
     }
@@ -70,7 +78,7 @@ public class Player extends Entity implements Battleable {
     }
 
     public boolean build(String entity, EntityFactory factory) {
-        InventoryItem item = inventory.checkBuildCriteria(this, true, entity.equals("shield"), factory);
+        InventoryItem item = inventory.checkBuildCriteria(this, true, entity, factory);
         if (item == null)
             return false;
         return inventory.add(item);
@@ -161,6 +169,14 @@ public class Player extends Entity implements Battleable {
 
     public <T extends InventoryItem> int countEntityOfType(Class<T> itemType) {
         return inventory.count(itemType);
+    }
+
+    public int getZombieNumber() {
+        return zombieNumber;
+    }
+
+    public void setZombieNumber(int zombieNumber) {
+        this.zombieNumber = zombieNumber;
     }
 
     public BattleStatistics applyBuff(BattleStatistics origin) {

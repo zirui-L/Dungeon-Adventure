@@ -1,44 +1,69 @@
 {
     "entities": [
         {
-            "type" : "player",
-            "x" : 1,
-            "y" : 1
+            "type": "player",
+            "x": 1,
+            "y": 1
         },
         {
-            "type" : "wood",
-            "x" : 2,
-            "y" : 1
+            "type": "wood",
+            "x": 2,
+            "y": 1
         },
         {
-            "type" : "arrow",
-            "x" : 3,
-            "y" : 1
+            "type": "arrow",
+            "x": 3,
+            "y": 1
         },
         {
-            "type" : "arrow",
-            "x" : 4,
-            "y" : 1
+            "type": "arrow",
+            "x": 4,
+            "y": 1
         },
         {
-            "type" : "arrow",
-            "x" : 5,
-            "y" : 1
+            "type": "arrow",
+            "x": 5,
+            "y": 1
         },
         {
-            "type" : "wood",
-            "x" : 6,
-            "y" : 1
+            "type": "wood",
+            "x": 6,
+            "y": 1
         },
         {
-            "type" : "wood",
-            "x" : 7,
-            "y" : 1
+            "type": "wood",
+            "x": 7,
+            "y": 1
         },
         {
-            "type" : "treasure",
-            "x" : 8,
-            "y" : 1
+            "type": "treasure",
+            "x": 8,
+            "y": 1
+        },
+        {
+            "type": "wood",
+            "x": 9,
+            "y": 1
+        },
+        {
+            "type": "treasure",
+            "x": 10,
+            "y": 1
+        },
+        {
+            "type": "sun_stone",
+            "x": 11,
+            "y": 1
+        },
+        {
+            "type": "sword",
+            "x": 12,
+            "y": 1
+        },
+        {
+            "type": "sun_stone",
+            "x": 13,
+            "y": 1
         },
         {
             "type": "exit",
@@ -46,5 +71,7 @@
             "y": 6
         }
     ],
-    "goal-condition": {"goal": "exit"}
+    "goal-condition": {
+        "goal": "exit"
+    }
 }

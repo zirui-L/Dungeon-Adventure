@@ -5,6 +5,7 @@ import dungeonmania.battles.BattleStatistics;
 import dungeonmania.entities.Entity;
 import dungeonmania.entities.Interactable;
 import dungeonmania.entities.Player;
+import dungeonmania.entities.buildables.Sceptre;
 import dungeonmania.entities.collectables.Treasure;
 import dungeonmania.entities.collectables.potions.InvincibilityPotion;
 import dungeonmania.entities.collectables.potions.InvisibilityPotion;
@@ -26,6 +27,9 @@ public class Mercenary extends Enemy implements Interactable {
     private boolean isAdjacentToPlayer = false;
 
     private MoveMethod moveMethod;
+
+    private boolean isUnderMindControl = false;
+    private int mindControlDuration;
 
     public Mercenary(Position position, double health, double attack, int bribeAmount, int bribeRadius,
             double allyAttack, double allyDefence) {
@@ -62,7 +66,7 @@ public class Mercenary extends Enemy implements Interactable {
      * @return
      */
     private boolean canBeBribed(Player player) {
-        return bribeRadius >= 0 && player.countEntityOfType(Treasure.class) >= bribeAmount;
+        return player.hasSceptre() || (bribeRadius >= 0 && player.countEntityOfType(Treasure.class) >= bribeAmount);
     }
 
     /**
@@ -75,12 +79,33 @@ public class Mercenary extends Enemy implements Interactable {
 
     }
 
+    private void mindControl(Player player, Sceptre sceptre) {
+        isUnderMindControl = true;
+        mindControlDuration = sceptre.getDuration();
+    }
+
+    public void updateControl() {
+        if (!isUnderMindControl) {
+            return;
+        }
+        if (mindControlDuration > 0) {
+            mindControlDuration--;
+            return;
+        }
+        allied = false;
+        isUnderMindControl = false;
+    }
+
     @Override
     public void interact(Player player, Game game) {
         allied = true;
-        bribe(player);
-        if (!isAdjacentToPlayer && Position.isAdjacent(player.getPosition(), getPosition()))
-            isAdjacentToPlayer = true;
+        if (player.hasSceptre()) {
+            mindControl(player, player.getSceptre());
+        } else {
+            bribe(player);
+            if (!isAdjacentToPlayer && Position.isAdjacent(player.getPosition(), getPosition()))
+                isAdjacentToPlayer = true;
+            }
     }
 
     @Override
