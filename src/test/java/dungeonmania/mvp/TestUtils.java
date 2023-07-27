@@ -143,12 +143,6 @@ public class TestUtils {
         return (x == toX || x == toX - 1 || x == toX + 1) && (y == toY || y == toY - 1 || y == toY + 1);
     }
 
-    @Deprecated(forRemoval = true)
-    public static int countEntitiesOfType(DungeonResponse response, String type) {
-        return response.getEntities().stream().filter(e -> e.getType().startsWith(type)).collect(Collectors.toList())
-                .size();
-    }
-
     public static boolean entityAtPosition(DungeonResponse res, String type, Position pos) {
         return getEntitiesStream(res, type).anyMatch(it -> it.getPosition().equals(pos));
     }

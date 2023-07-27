@@ -62,7 +62,8 @@ public class BattleStatistics {
 
     public static BattleStatistics applyBuff(BattleStatistics origin, BattleStatistics buff) {
         return new BattleStatistics(origin.health + buff.health, origin.attack + buff.attack,
-                origin.defence + buff.defence, origin.magnifier, origin.reducer, buff.isInvincible(), buff.isEnabled());
+                origin.defence + buff.defence, origin.magnifier * buff.magnifier, origin.reducer * buff.reducer,
+                (buff.invincible || origin.invincible), (buff.enabled && origin.enabled));
     }
 
     public double getHealth() {

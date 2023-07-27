@@ -132,4 +132,15 @@ public final class Position {
         adjacentPositions.add(new Position(x - 1, y));
         return adjacentPositions;
     }
+
+    public boolean isWithinRadius(Position other, int radius) {
+        int deltaX = Math.abs(this.x - other.x);
+        int deltaY = Math.abs(this.y - other.y);
+
+        // Calculate the Manhattan distance between the two positions
+        int distance = Math.max(deltaX, deltaY);
+
+        // Check if the distance is within the specified radius
+        return distance <= radius;
+    }
 }

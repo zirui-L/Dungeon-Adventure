@@ -66,7 +66,12 @@ public class Mercenary extends Enemy implements Interactable {
      * @return
      */
     private boolean canBeBribed(Player player) {
-        return player.hasSceptre() || (bribeRadius >= 0 && player.countEntityOfType(Treasure.class) >= bribeAmount);
+        Position playerPosition = player.getPosition();
+        Position mercenaryPosition = this.getPosition();
+
+        boolean canBribe = bribeRadius >= 0 && player.countEntityOfType(Treasure.class) >= bribeAmount
+                && playerPosition.isWithinRadius(mercenaryPosition, bribeRadius);
+        return canBribe || player.hasSceptre();
     }
 
     /**

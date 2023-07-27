@@ -4,7 +4,7 @@
   "bomb_radius": 1,
   "bow_durability": 2,
   "bribe_amount": 1,
-  "bribe_radius": 2,
+  "bribe_radius": 5,
   "invincibility_potion_duration": 1,
   "invisibility_potion_duration": 1,
   "mercenary_attack": 5,
