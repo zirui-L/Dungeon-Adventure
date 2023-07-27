@@ -12,9 +12,12 @@ import dungeonmania.entities.Entity;
 import dungeonmania.entities.Player;
 import dungeonmania.entities.Portal;
 import dungeonmania.entities.Switch;
-import dungeonmania.entities.collectables.Bomb;
 import dungeonmania.entities.enemies.Enemy;
 import dungeonmania.entities.enemies.ZombieToastSpawner;
+import dungeonmania.entities.logics.LogicItem;
+import dungeonmania.entities.logics.Trigger;
+import dungeonmania.entities.logics.Triggerble;
+import dungeonmania.entities.logics.Wire;
 import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
@@ -36,16 +39,52 @@ public class GameMap {
         initRegisterMovables();
         initRegisterSpawners();
         initRegisterBombsAndSwitches();
+        initLogicComponentCount();
+    }
+
+    private void initLogicComponentCount() {
+        List<Wire> wires = getEntities(Wire.class);
+        List<Switch> switchs = getEntities(Switch.class);
+        List<LogicItem> logics = getEntities(LogicItem.class);
+
+        List<Trigger> triggers = getTriggers();
+
+        wires.forEach(wire -> {
+            game.register(() -> wire.setNotified(false), Game.LOGIC_ENTITY_UPDATE, wire.getId());
+            game.register(() -> wire.setActivated(false), Game.LOGIC_ENTITY_UPDATE, wire.getId());
+
+        });
+
+        switchs.forEach(s -> {
+            game.register(() -> s.notifyTriggerbles(this), Game.SWITCH_UPDATE, s.getId());
+        });
+
+        logics.forEach(logic -> {
+            game.register(() -> logic.notify(this), Game.NOTIFY_LOGIC_ITEMS, logic.getId());
+        });
+
+        triggers.forEach(trigger -> {
+            game.register(() -> trigger
+                    .setActivatedTick(trigger.isActivated() && !trigger.isPreviouslyActivated() ? game.getTickCount()
+                            : trigger.getActivatedTick()),
+                    Game.SET_TRIGGER_ACTIVATED_TICK, trigger.getId());
+            game.register(() -> trigger.setPreviouslyActivated(trigger.isActivated()), Game.SET_TRIGGER_PREV_ACTIVATED,
+                    trigger.getId());
+        });
+
     }
 
     private void initRegisterBombsAndSwitches() {
-        List<Bomb> bombs = getEntities(Bomb.class);
-        List<Switch> switchs = getEntities(Switch.class);
-        for (Bomb b : bombs) {
-            for (Switch s : switchs) {
-                if (Position.isAdjacent(b.getPosition(), s.getPosition())) {
-                    b.subscribe(s);
-                    s.subscribe(b);
+
+        List<Triggerble> triggerbles = getEntities(Triggerble.class);
+        List<Trigger> triggers = getTriggers();
+
+        for (Trigger trigger : triggers) {
+            for (Triggerble triggerble : triggerbles) {
+                if (Position.isAdjacent(trigger.getPosition(), triggerble.getPosition())
+                        && !trigger.equals(triggerble)) {
+                    trigger.subscribe(triggerble);
+                    triggerble.subscribe(trigger);
                 }
             }
         }
@@ -229,6 +268,10 @@ public class GameMap {
         return res;
     }
 
+    public <T extends Entity> List<T> getEntities(Class<T> type) {
+        return getEntities().stream().filter(type::isInstance).map(type::cast).collect(Collectors.toList());
+    }
+
     public List<Entity> getEntities(Position p) {
         GraphNode node = nodes.get(p);
         return (node != null) ? node.getEntities() : new ArrayList<>();
@@ -240,15 +283,16 @@ public class GameMap {
         return entities;
     }
 
+    public List<Trigger> getTriggers() {
+        return getEntities().stream().filter(e -> e instanceof Trigger).map(e -> (Trigger) e)
+                .collect(Collectors.toList());
+    }
+
     public int getSpawnerNumber() {
         List<Entity> entities = getEntities();
 
         return (int) entities.stream().filter(entity -> entity instanceof ZombieToastSpawner).count();
 
-    }
-
-    public <T extends Entity> List<T> getEntities(Class<T> type) {
-        return getEntities().stream().filter(type::isInstance).map(type::cast).collect(Collectors.toList());
     }
 
     public Player getPlayer() {

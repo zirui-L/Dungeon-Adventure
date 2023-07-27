@@ -6,6 +6,9 @@ import dungeonmania.entities.buildables.Shield;
 import dungeonmania.entities.collectables.*;
 import dungeonmania.entities.collectables.Sword;
 import dungeonmania.entities.enemies.*;
+import dungeonmania.entities.logics.LightBulb;
+import dungeonmania.entities.logics.SwitchDoor;
+import dungeonmania.entities.logics.Wire;
 import dungeonmania.map.GameMap;
 import dungeonmania.entities.collectables.potions.InvincibilityPotion;
 import dungeonmania.entities.collectables.potions.InvisibilityPotion;
@@ -124,7 +127,7 @@ public class EntityFactory {
 
     private Entity constructEntity(JSONObject jsonEntity, JSONObject config) {
         Position pos = new Position(jsonEntity.getInt("x"), jsonEntity.getInt("y"));
-
+        String logic = null;
         switch (jsonEntity.getString("type")) {
         case "player":
             return buildPlayer(pos);
@@ -150,7 +153,12 @@ public class EntityFactory {
             return new Arrow(pos);
         case "bomb":
             int bombRadius = config.optInt("bomb_radius", Bomb.DEFAULT_RADIUS);
-            return new Bomb(pos, bombRadius);
+
+            if (jsonEntity.has("logic")) {
+                logic = jsonEntity.getString("logic");
+            }
+
+            return new Bomb(pos, bombRadius, logic);
         case "invisibility_potion":
             int invisibilityPotionDuration = config.optInt("invisibility_potion_duration",
                     InvisibilityPotion.DEFAULT_DURATION);
@@ -171,6 +179,14 @@ public class EntityFactory {
             return new Door(pos, jsonEntity.getInt("key"));
         case "key":
             return new Key(pos, jsonEntity.getInt("key"));
+        case "light_bulb_off":
+            logic = jsonEntity.getString("logic");
+            return new LightBulb(pos, logic);
+        case "switch_door":
+            logic = jsonEntity.getString("logic");
+            return new SwitchDoor(pos, logic);
+        case "wire":
+            return new Wire(pos);
         default:
             return null;
         }

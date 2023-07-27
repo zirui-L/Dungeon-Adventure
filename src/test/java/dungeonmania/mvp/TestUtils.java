@@ -39,6 +39,17 @@ public class TestUtils {
             return res.getEntities().stream().filter(it -> it.getType().startsWith(type))
                     .filter(it -> !it.getType().startsWith("zombie_toast_spawner"));
         }
+
+        if (type.equals("switch")) {
+            return res.getEntities().stream().filter(it -> it.getType().startsWith(type))
+                    .filter(it -> !it.getType().startsWith("switch_door"));
+        }
+
+        if (type.equals("switch_door")) {
+            return res.getEntities().stream().filter(it -> it.getType().startsWith(type))
+                    .filter(it -> !it.getType().startsWith("switch_door_open"));
+        }
+
         return res.getEntities().stream().filter(it -> it.getType().startsWith(type));
     }
 

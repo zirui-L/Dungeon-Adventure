@@ -1,35 +1,35 @@
-import axios, { AxiosResponse } from "axios";
-import { Dungeon, GameResponse } from "../types/Types";
+import axios, { AxiosResponse } from 'axios';
+import { Dungeon, GameResponse } from '../types/Types';
 
-import Swal from "sweetalert2";
-import { ErrorAlert } from "./Alerts";
-import { LocalisationFile, SkinFile } from "../types/Module";
+import Swal from 'sweetalert2';
+import { ErrorAlert } from './Alerts';
+import { LocalisationFile, SkinFile } from '../types/Module';
 
-const URL = ""
+const URL = '';
 
 export function detectWebGL() {
   // Check for the WebGL rendering context
-  if (!!window.WebGLRenderingContext) {
-    var canvas = document.createElement("canvas"),
-      names = ["webgl", "experimental-webgl", "moz-webgl", "webkit-3d"],
-      context = false;
+  // if (!!window.WebGLRenderingContext) {
+  //   var canvas = document.createElement("canvas"),
+  //     names = ["webgl", "experimental-webgl", "moz-webgl", "webkit-3d"],
+  //     context = false;
 
-    for (var i in names) {
-      try {
-        const context = canvas.getContext(names[i]);
-        if (
-          context &&
-          typeof (context as WebGL2RenderingContext).getParameter === "function"
-        ) {
-          // WebGL is enabled.
-          return true;
-        }
-      } catch (e) {}
-    }
+  //   for (var i in names) {
+  //     try {
+  //       const context = canvas.getContext(names[i]);
+  //       if (
+  //         context &&
+  //         typeof (context as WebGL2RenderingContext).getParameter === "function"
+  //       ) {
+  //         // WebGL is enabled.
+  //         return true;
+  //       }
+  //     } catch (e) {}
+  //   }
 
-    // WebGL is supported, but disabled.
-    return false;
-  }
+  //   // WebGL is supported, but disabled.
+  //   return false;
+  // }
 
   // WebGL not supported.
   return false;
@@ -45,14 +45,14 @@ async function evaluateResponse<T>(
   try {
     const resp = await promise;
     if (resp.data && resp.data.isError) {
-      ErrorAlert(title, resp.data.errorTitle + ":\n" + resp.data.errorMessage);
+      ErrorAlert(title, resp.data.errorTitle + ':\n' + resp.data.errorMessage);
       return otherwise;
     } else {
       return resp.data.result as T;
     }
   } catch (err) {
     ErrorAlert(
-      "Unknown Error: " + (err && err.statusCode) || "",
+      'Unknown Error: ' + (err && err.statusCode) || '',
       err.data || err
     );
     return otherwise;
@@ -67,14 +67,14 @@ async function evaluateAsset<T>(
   try {
     const resp = await promise;
     if (!resp.data) {
-      ErrorAlert(title, resp.data.errorTitle + ":\n" + resp.data.errorMessage);
+      ErrorAlert(title, resp.data.errorTitle + ':\n' + resp.data.errorMessage);
       return otherwise;
     } else {
       return resp.data as T;
     }
   } catch (err) {
     ErrorAlert(
-      "Unknown Error: " + ((err && err.statusCode) || ""),
+      'Unknown Error: ' + ((err && err.statusCode) || ''),
       err.data || err
     );
     return otherwise;
@@ -84,82 +84,80 @@ async function evaluateAsset<T>(
 export const API = {
   loadSkin: (skin: string): Promise<SkinFile> =>
     evaluateAsset(
-      axios.get(URL + "/skins/" + skin + ".json"),
-      "Error GET /skins/" +
+      axios.get(URL + '/skins/' + skin + '.json'),
+      'Error GET /skins/' +
         skin +
         ".json: Is most likely due to the fact the file didn't exist, have a look at the Java output window",
       {} as SkinFile
     ),
   loadLocalisation: (localisation: string): Promise<LocalisationFile> =>
     evaluateAsset(
-      axios.get(URL + "/languages/" + localisation + ".json"),
-      "Error GET /languages/" +
+      axios.get(URL + '/languages/' + localisation + '.json'),
+      'Error GET /languages/' +
         localisation +
         ".json: Is most likely due to the fact the file didn't exist, have a look at the Java output window",
       {} as LocalisationFile
     ),
   getConfigs: (): Promise<string[]> =>
-      evaluateResponse(
-          axios.get(URL + "/api/configs/"),
-          "Error GET /configs: DungeonManiaController::configs(...)",
-          []
-      ),
+    evaluateResponse(
+      axios.get(URL + '/api/configs/'),
+      'Error GET /configs: DungeonManiaController::configs(...)',
+      []
+    ),
   getSkin: (): Promise<string> =>
     evaluateResponse(
-      axios.get(URL + "/api/skin/current/"),
-      "Error GET /skin/current: DungeonManiaController::getSkin(...)",
-      "default"
+      axios.get(URL + '/api/skin/current/'),
+      'Error GET /skin/current: DungeonManiaController::getSkin(...)',
+      'default'
     ),
   getLocalisation: (): Promise<string> =>
     evaluateResponse(
-      axios.get(URL + "/api/localisation/current/"),
-      "Error GET /skin/current: DungeonManiaController::getLocalisation(...)",
-      "en_US"
+      axios.get(URL + '/api/localisation/current/'),
+      'Error GET /skin/current: DungeonManiaController::getLocalisation(...)',
+      'en_US'
     ),
   getDungeons: (): Promise<string[]> =>
     evaluateResponse(
-      axios.get(URL + "/api/dungeons/"),
-      "Error GET /dungeons: DungeonManiaController::dungeons(...)",
+      axios.get(URL + '/api/dungeons/'),
+      'Error GET /dungeons: DungeonManiaController::dungeons(...)',
       []
     ),
   newGame: (dungeonName: string, configName: string): Promise<Dungeon | null> =>
     evaluateResponse(
       axios.post(
-        URL + "/api/game/new/",
+        URL + '/api/game/new/',
         {},
         {
           params: {
             dungeonName,
-            configName
+            configName,
           },
         }
       ),
-      "Error POST /game/new: DungeonManiaController::ctor(...)",
+      'Error POST /game/new: DungeonManiaController::ctor(...)',
       null
     ),
   interact: async (entityId: string): Promise<Dungeon | null> => {
     if (currentResponse) await currentResponse;
     return (currentResponse = evaluateResponse(
-      axios.post("/api/game/interact/?entityId=" + entityId, {}),
-      "Error POST /games/game/interact/: DungeonManiaController::interact(...)",
+      axios.post('/api/game/interact/?entityId=' + entityId, {}),
+      'Error POST /games/game/interact/: DungeonManiaController::interact(...)',
       null
     ));
   },
   dungeonResponseModel: async (): Promise<Dungeon | null> => {
     if (currentResponse) await currentResponse;
     return (currentResponse = evaluateResponse(
-        axios.post("/api/game/dungeonResponseModel/", {}),
-        "Error POST /games/game/dungeonResponseModel/: DungeonManiaController::dungeonResponseModel(...)",
-        null
+      axios.post('/api/game/dungeonResponseModel/', {}),
+      'Error POST /games/game/dungeonResponseModel/: DungeonManiaController::dungeonResponseModel(...)',
+      null
     ));
   },
-  tickByItem: async (
-    itemUsed: string | undefined,
-  ): Promise<Dungeon | null> => {
+  tickByItem: async (itemUsed: string | undefined): Promise<Dungeon | null> => {
     if (currentResponse) await currentResponse;
     return (currentResponse = evaluateResponse(
       axios.post(
-        URL + "/api/game/tick/item/",
+        URL + '/api/game/tick/item/',
         {},
         {
           params: {
@@ -167,33 +165,33 @@ export const API = {
           },
         }
       ),
-      "Error POST /game/tick: DungeonManiaController::tick(...)",
+      'Error POST /game/tick: DungeonManiaController::tick(...)',
       null
     ));
   },
   tickByMovement: async (
-      movementDirection: "Up" | "Down" | "Left" | "Right" | "None"
+    movementDirection: 'Up' | 'Down' | 'Left' | 'Right' | 'None'
   ): Promise<Dungeon | null> => {
     if (currentResponse) await currentResponse;
     return (currentResponse = evaluateResponse(
-        axios.post(
-            "/api/game/tick/movement/",
-            {},
-            {
-              params: {
-                movementDirection,
-              },
-            }
-        ),
-        "Error POST /game/tick: DungeonManiaController::tick(...)",
-        null
+      axios.post(
+        '/api/game/tick/movement/',
+        {},
+        {
+          params: {
+            movementDirection,
+          },
+        }
+      ),
+      'Error POST /game/tick: DungeonManiaController::tick(...)',
+      null
     ));
   },
   build: async (buildable: string): Promise<Dungeon | null> => {
     if (currentResponse) await currentResponse;
     return (currentResponse = evaluateResponse(
       axios.post(
-        URL + "/api/game/build/",
+        URL + '/api/game/build/',
         {},
         {
           params: {
@@ -201,24 +199,24 @@ export const API = {
           },
         }
       ),
-      "Error POST /game/build: DungeonManiaController::build(...)",
+      'Error POST /game/build: DungeonManiaController::build(...)',
       null
     ));
   },
   rewind: async (ticks: integer): Promise<Dungeon | null> => {
     if (currentResponse) await currentResponse;
-    return currentResponse = evaluateResponse(
-        axios.post(
-            URL + "/api/game/rewind/",
-            {},
-            {
-              params: {
-                ticks,
-              },
-            }
-        ),
-        "Error POST /game/rewind: DungeonManiaController::rewindGame(...)",
-        null
-    );
+    return (currentResponse = evaluateResponse(
+      axios.post(
+        URL + '/api/game/rewind/',
+        {},
+        {
+          params: {
+            ticks,
+          },
+        }
+      ),
+      'Error POST /game/rewind: DungeonManiaController::rewindGame(...)',
+      null
+    ));
   },
 };

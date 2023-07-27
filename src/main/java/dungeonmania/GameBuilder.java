@@ -39,6 +39,7 @@ public class GameBuilder {
     public Game buildGame() {
         loadConfig();
         loadDungeon();
+
         if (dungeon == null && config == null) {
             return null; // something went wrong
         }
