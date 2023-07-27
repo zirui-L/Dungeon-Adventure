@@ -129,7 +129,8 @@ public class BasicGoalsTest {
     public void treasureWithSunStone() {
         DungeonManiaController dmc;
         dmc = new DungeonManiaController();
-        DungeonResponse res = dmc.newGame("d_basicGoalsTest_treasureWithSunStone", "c_basicGoalsTest_treasureWithSunStone");
+        DungeonResponse res = dmc.newGame("d_basicGoalsTest_treasureWithSunStone",
+                                        "c_basicGoalsTest_treasureWithSunStone");
 
         // move player to right
         res = dmc.tick(Direction.RIGHT);

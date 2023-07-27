@@ -143,4 +143,11 @@ public final class Position {
         // Check if the distance is within the specified radius
         return distance <= radius;
     }
+
+    public boolean isCardinallyAdjacent(Position other) {
+        for (Position adjacentPosition : getCardinallyAdjacentPositions()) {
+            if (adjacentPosition.equals(other)) return true;
+        }
+        return false;
+    }
 }

@@ -1,7 +1,6 @@
 package dungeonmania.entities;
 
 import dungeonmania.map.GameMap;
-import dungeonmania.util.Direction;
 import dungeonmania.util.Position;
 
 import java.util.UUID;
