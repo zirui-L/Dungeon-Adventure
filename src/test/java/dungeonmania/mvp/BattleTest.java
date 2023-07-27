@@ -577,4 +577,50 @@ public class BattleTest {
         double allyDefence = Double.parseDouble(TestUtils.getValueFromConfigFile("ally_defence", config));
         assertEquals((mercenaryAttack - allyDefence) / 10, -firstRound.getDeltaCharacterHealth(), 0.001);
     }
+
+    @Test
+    @Tag("11-18")
+    @DisplayName("Test Midnight Armour reduces enemy attack")
+    public void testMidnightArmourReducesEnemyAttack() throws InvalidActionException {
+        DungeonManiaController controller;
+        controller = new DungeonManiaController();
+        String config = "c_battleTest_MidnightArmourEffect";
+        DungeonResponse res = controller.newGame("d_battleTest_MidnightArmourTest", config);
+
+        // Pick up sword
+        res = controller.tick(Direction.RIGHT);
+
+        // Pick up sun stone
+        res = controller.tick(Direction.RIGHT);
+
+        // Pick up key
+        res = controller.tick(Direction.RIGHT);
+        res = controller.tick(Direction.RIGHT);
+
+        assertEquals(1, TestUtils.getInventory(res, "sword").size());
+        assertEquals(1, TestUtils.getInventory(res, "key").size());
+        assertEquals(1, TestUtils.getInventory(res, "sun_stone").size());
+
+        res = controller.build("midnight_armour");
+
+        res = controller.tick(Direction.RIGHT);
+
+        BattleResponse battle = res.getBattles().get(0);
+
+        RoundResponse firstRound = battle.getRounds().get(0);
+
+        // Assumption: Armour effect calculation to reduce damage makes enemyAttack =
+        // enemyAttack - armour effect
+        int enemyAttack = Integer.parseInt(TestUtils.getValueFromConfigFile("spider_attack", config));
+        int armourEffect = Integer.parseInt(TestUtils.getValueFromConfigFile("midnight_armour_defence", config));
+        int expectedDamage = (enemyAttack - armourEffect) / 10;
+        // Delta health is negative so take negative here
+        assertEquals(expectedDamage, -firstRound.getDeltaCharacterHealth(), 0.001);
+
+        // check effect on attacking
+        double playerBaseAttack = Double.parseDouble(TestUtils.getValueFromConfigFile("player_attack", config));
+        double armourAttack = Double.parseDouble(TestUtils.getValueFromConfigFile("sword_attack", config));
+
+        assertEquals((playerBaseAttack + armourAttack) / 5, -firstRound.getDeltaEnemyHealth(), 0.001);
+    }
 }

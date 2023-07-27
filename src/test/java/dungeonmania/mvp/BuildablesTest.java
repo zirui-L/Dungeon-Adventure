@@ -136,7 +136,8 @@ public class BuildablesTest {
     public void buildSceptredWithWoodAndKey() {
         DungeonManiaController dmc;
         dmc = new DungeonManiaController();
-        DungeonResponse res = dmc.newGame("d_BuildablesTest_BuildSceptredWithWoodAndKey", "c_BuildablesTest_BuildSceptredWithWoodAndKey");
+        DungeonResponse res = dmc.newGame("d_BuildablesTest_BuildSceptredWithWoodAndKey",
+                                            "c_BuildablesTest_BuildSceptredWithWoodAndKey");
 
         assertEquals(0, TestUtils.getInventory(res, "wood").size());
         assertEquals(0, TestUtils.getInventory(res, "treasure").size());
@@ -171,7 +172,8 @@ public class BuildablesTest {
     public void buildSceptredWithArrowAndTreasure() {
         DungeonManiaController dmc;
         dmc = new DungeonManiaController();
-        DungeonResponse res = dmc.newGame("d_BuildablesTest_BuildSceptredWithArrowAndTreasure", "c_BuildablesTest_BuildSceptredWithArrowAndTreasure");
+        DungeonResponse res = dmc.newGame("d_BuildablesTest_BuildSceptredWithArrowAndTreasure",
+                                            "c_BuildablesTest_BuildSceptredWithArrowAndTreasure");
 
         assertEquals(0, TestUtils.getInventory(res, "arrow").size());
         assertEquals(0, TestUtils.getInventory(res, "treasure").size());
@@ -207,7 +209,8 @@ public class BuildablesTest {
     public void buildSceptredWithWoodAndTwoSunStones() {
         DungeonManiaController dmc;
         dmc = new DungeonManiaController();
-        DungeonResponse res = dmc.newGame("d_BuildablesTest_BuildSceptredWithWoodAndTwoSunStones", "c_BuildablesTest_BuildSceptredWithWoodAndTwoSunStones");
+        DungeonResponse res = dmc.newGame("d_BuildablesTest_BuildSceptredWithWoodAndTwoSunStones",
+                                        "c_BuildablesTest_BuildSceptredWithWoodAndTwoSunStones");
 
         assertEquals(0, TestUtils.getInventory(res, "wood").size());
         assertEquals(0, TestUtils.getInventory(res, "sun_stone").size());
@@ -241,7 +244,8 @@ public class BuildablesTest {
     public void buildMidnightArmourWithSwordAndSunStone() {
         DungeonManiaController dmc;
         dmc = new DungeonManiaController();
-        DungeonResponse res = dmc.newGame("d_BuildablesTest_BuildMidnightArmourWithSwordAndSunStone", "c_BuildablesTest_BuildMidnightArmourWithSwordAndSunStone");
+        DungeonResponse res = dmc.newGame("d_BuildablesTest_BuildMidnightArmourWithSwordAndSunStone",
+                                            "c_BuildablesTest_BuildMidnightArmourWithSwordAndSunStone");
 
         assertEquals(0, TestUtils.getInventory(res, "sword").size());
         assertEquals(0, TestUtils.getInventory(res, "sun_stone").size());
@@ -271,7 +275,8 @@ public class BuildablesTest {
     public void buildInvalidActionExceptionMidnightArmour() {
         DungeonManiaController dmc;
         dmc = new DungeonManiaController();
-        DungeonResponse res = dmc.newGame("d_BuildablesTest_BuildInvalidActionExceptionMidnightArmour", "c_BuildablesTest_BuildInvalidActionExceptionMidnightArmour");
+        DungeonResponse res = dmc.newGame("d_BuildablesTest_BuildInvalidActionExceptionMidnightArmour",
+                                        "c_BuildablesTest_BuildInvalidActionExceptionMidnightArmour");
         assertThrows(InvalidActionException.class, () -> dmc.build("bow"));
 
         assertThrows(InvalidActionException.class, () -> dmc.build("shield"));

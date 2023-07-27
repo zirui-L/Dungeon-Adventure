@@ -117,6 +117,39 @@ public class MercenaryTest {
 
     @Test
     @Tag("12-6")
+    @DisplayName("Testing a mercenary cannot be bribed with sun stone")
+    public void bribeFailedWithSunStone() {
+        //                                                          Wall     Wall     Wall    Wall    Wall
+        // P1       P2/SunStone      P3/SunStone    P4/SunStone      M4       M3       M2     M1      Wall
+        //                                                          Wall     Wall     Wall    Wall    Wall
+        DungeonManiaController dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame("d_mercenaryTest_bribeFailedWithSunStone",
+                                        "c_mercenaryTest_bribeFailedWithSunStone");
+
+        String mercId = TestUtils.getEntitiesStream(res, "mercenary").findFirst().get().getId();
+
+        // pick up first sun stone
+        res = dmc.tick(Direction.RIGHT);
+        assertEquals(1, TestUtils.getInventory(res, "sun_stone").size());
+        assertEquals(new Position(7, 1), getMercPos(res));
+
+        // pick up second sun stone
+        res = dmc.tick(Direction.RIGHT);
+        assertEquals(2, TestUtils.getInventory(res, "sun_stone").size());
+        assertEquals(new Position(6, 1), getMercPos(res));
+
+        // pick up third treasure
+        res = dmc.tick(Direction.RIGHT);
+        assertEquals(3, TestUtils.getInventory(res, "sun_stone").size());
+        assertEquals(new Position(5, 1), getMercPos(res));
+
+        // achieve bribe
+        assertThrows(InvalidActionException.class, () -> dmc.interact(mercId));
+        assertEquals(0, TestUtils.getInventory(res, "treasure").size());
+    }
+
+    @Test
+    @Tag("12-7")
     @DisplayName("Testing a mercenary can be bribed within a radius")
     public void bribeRadius() {
         //                                         Wall     Wall    Wall    Wall  Wall
@@ -138,7 +171,7 @@ public class MercenaryTest {
     }
 
     @Test
-    @Tag("12-7")
+    @Tag("12-8")
     @DisplayName("Testing an allied mercenary does not battle the player")
     public void allyBattle() {
         //                                  Wall    Wall    Wall
@@ -163,7 +196,7 @@ public class MercenaryTest {
     }
 
     @Test
-    @Tag("12-8")
+    @Tag("12-9")
     @DisplayName("Testing a mercenary is bribed next to the player, then follow the player")
     public void allyMovementStick() {
         /**
@@ -217,7 +250,7 @@ public class MercenaryTest {
     }
 
     @Test
-    @Tag("12-9")
+    @Tag("12-10")
     @DisplayName("Testing an allied mercenary finds the player, then follow the player")
     public void allyMovementFollow() {
         /**
@@ -333,7 +366,7 @@ public class MercenaryTest {
         res = assertDoesNotThrow(() -> dmc.interact(mercId));
         assertEquals(0, TestUtils.getInventory(res, "treasure").size());
         assertEquals(new Position(6, 1), getMercPos(res));
-        
+
         // player overlap with the Mercenery yet no battle
         res = dmc.tick(Direction.RIGHT);
         assertEquals(new Position(5, 1), getMercPos(res));

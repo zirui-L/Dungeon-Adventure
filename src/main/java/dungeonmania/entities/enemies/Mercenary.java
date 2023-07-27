@@ -74,6 +74,10 @@ public class Mercenary extends Enemy implements Interactable {
         return canBribe || player.hasSceptre();
     }
 
+    public int getBribeRadius() {
+        return bribeRadius;
+    }
+
     /**
      * bribe the merc
      */
@@ -127,6 +131,10 @@ public class Mercenary extends Enemy implements Interactable {
             moveMethod = new TowardsMove();
         }
         moveMethod.nextPosition(this, game);
+    }
+
+    public int getBribeAmount() {
+        return bribeAmount;
     }
 
     @Override

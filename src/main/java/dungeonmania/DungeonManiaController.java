@@ -4,13 +4,25 @@ import java.util.List;
 
 import org.json.JSONException;
 
+import dungeonmania.entities.Entity;
+import dungeonmania.entities.Player;
+import dungeonmania.entities.buildables.Sceptre;
+import dungeonmania.entities.collectables.Bomb;
+import dungeonmania.entities.collectables.SunStone;
+import dungeonmania.entities.collectables.Treasure;
+import dungeonmania.entities.collectables.potions.InvincibilityPotion;
+import dungeonmania.entities.collectables.potions.InvisibilityPotion;
+import dungeonmania.entities.enemies.Mercenary;
 import dungeonmania.entities.enemies.ZombieToast;
+import dungeonmania.entities.enemies.ZombieToastSpawner;
+import dungeonmania.entities.inventory.Inventory;
 import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.map.GameMap;
 import dungeonmania.response.models.DungeonResponse;
 import dungeonmania.response.models.ResponseBuilder;
 import dungeonmania.util.Direction;
 import dungeonmania.util.FileLoader;
+import dungeonmania.util.Position;
 
 /**
  * DO NOT CHANGE METHOD SIGNITURES OF THIS FILE
@@ -72,6 +84,17 @@ public class DungeonManiaController {
      * /game/tick/item
      */
     public DungeonResponse tick(String itemUsedId) throws IllegalArgumentException, InvalidActionException {
+        Player player = game.getPlayer();
+        Inventory inventory = player.getInventory();
+        Entity itemUsed = inventory.getEntity(itemUsedId);
+        if (itemUsed == null) {
+            throw new InvalidActionException("itemUsed is not in the player's inventory");
+        }
+        if (!(itemUsed instanceof Bomb || itemUsed instanceof InvincibilityPotion
+                                        || itemUsed instanceof InvisibilityPotion)) {
+            throw new IllegalArgumentException("ItemUsed is not a bomb, invincibility potion, "
+                                                                        + "or an invisibility potion");
+        }
         return ResponseBuilder.getDungeonResponse(game.tick(itemUsedId));
     }
 
@@ -103,6 +126,35 @@ public class DungeonManiaController {
      * /game/interact
      */
     public DungeonResponse interact(String entityId) throws IllegalArgumentException, InvalidActionException {
+        GameMap map = game.getMap();
+        Entity entity = map.getEntity(entityId);
+        if (entity == null) {
+            throw new IllegalArgumentException("Entity is not a valid Entity");
+        }
+
+        Player player = game.getPlayer();
+        Position entityPosition = entity.getPosition();
+        if (entity instanceof ZombieToastSpawner) {
+            if (!entityPosition.isCardinallyAdjacent(player.getPosition())) {
+                throw new InvalidActionException("The player is not cardinally adjacent to the spawner");
+            }
+            if (player.getWeapon() == null) {
+                throw new InvalidActionException("The player does not have a weapon");
+            }
+        } else if (entity instanceof Mercenary) {
+            Inventory inventory = player.getInventory();
+            if (inventory.getEntities(Sceptre.class).size() == 0) {
+                if (!entityPosition.isWithinRadius(player.getPosition(), ((Mercenary) entity).getBribeRadius())) {
+                    throw new InvalidActionException("The player is not within specified bribing "
+                                                                                    + "radius to the mercenary");
+                }
+                if (((Mercenary) entity).getBribeAmount()
+                    > (inventory.getEntities(Treasure.class).size() - inventory.getEntities(SunStone.class).size())) {
+                    throw new InvalidActionException("The player does not have enough gold to bribe the mercenary");
+                }
+            }
+        }
+
         return ResponseBuilder.getDungeonResponse(game.interact(entityId));
     }
 
