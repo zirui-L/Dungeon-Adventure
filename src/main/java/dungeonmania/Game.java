@@ -31,6 +31,11 @@ public class Game {
     public static final int AI_MOVEMENT = 2;
     public static final int AI_MOVEMENT_CALLBACK = 3;
     public static final int ITEM_LONGEVITY_UPDATE = 4;
+    public static final int LOGIC_ENTITY_UPDATE = 5;
+    public static final int SWITCH_UPDATE = 6;
+    public static final int SET_TRIGGER_ACTIVATED_TICK = 7;
+    public static final int SET_TRIGGER_PREV_ACTIVATED = 8;
+    public static final int NOTIFY_LOGIC_ITEMS = 9;
 
     private ComparableCallback currentAction = null;
 
@@ -212,4 +217,9 @@ public class Game {
     public BattleFacade getBattleFacade() {
         return battleFacade;
     }
+
+    public int getTickCount() {
+        return tickCount;
+    }
+
 }

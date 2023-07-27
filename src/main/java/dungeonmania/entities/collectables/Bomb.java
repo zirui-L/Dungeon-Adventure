@@ -9,9 +9,12 @@ import java.util.stream.Collectors;
 import dungeonmania.entities.Entity;
 import dungeonmania.entities.Player;
 import dungeonmania.entities.Switch;
+import dungeonmania.entities.inventory.InventoryItem;
+import dungeonmania.entities.logics.LogicItem;
+import dungeonmania.entities.logics.Trigger;
 import dungeonmania.map.GameMap;
 
-public class Bomb extends Collectable {
+public class Bomb extends LogicItem implements InventoryItem {
     public enum State {
         SPAWNED, INVENTORY, PLACED
     }
@@ -20,20 +23,31 @@ public class Bomb extends Collectable {
     private State state;
     private int radius;
 
-    private List<Switch> subs = new ArrayList<>();
+    private List<Trigger> subs = new ArrayList<>();
 
-    public Bomb(Position position, int radius) {
-        super(position);
+    public Bomb(Position position, int radius, String logic) {
+        super(position, logic);
         state = State.SPAWNED;
         this.radius = radius;
     }
 
-    public void subscribe(Switch s) {
-        this.subs.add(s);
+    @Override
+    public void notify(GameMap map) {
+        if (getLogic() == null) {
+            if (isActivatedBySwitch()) {
+                explode(map);
+            }
+
+        } else {
+            if (isLogicSatisfied()) {
+                explode(map);
+            }
+        }
     }
 
-    public void notify(GameMap map) {
-        explode(map);
+    private boolean isActivatedBySwitch() {
+        return getTriggers().stream().filter(trigger -> (trigger instanceof Switch)).map(Switch.class::cast)
+                .filter(s -> s.isActivated()).count() >= 1;
     }
 
     @Override
@@ -60,10 +74,10 @@ public class Bomb extends Collectable {
         this.state = State.PLACED;
         List<Position> adjPosList = getPosition().getCardinallyAdjacentPositions();
         adjPosList.stream().forEach(node -> {
-            List<Entity> entities = map.getEntities(node).stream().filter(e -> (e instanceof Switch))
+            List<Entity> entities = map.getEntities(node).stream().filter(e -> (e instanceof Trigger))
                     .collect(Collectors.toList());
-            entities.stream().map(Switch.class::cast).forEach(s -> s.subscribe(this, map));
-            entities.stream().map(Switch.class::cast).forEach(s -> this.subscribe(s));
+            entities.stream().map(Trigger.class::cast).forEach(s -> s.subscribe(this));
+            entities.stream().map(Trigger.class::cast).forEach(s -> this.subscribe(s));
         });
     }
 
@@ -80,7 +94,4 @@ public class Bomb extends Collectable {
         }
     }
 
-    public State getState() {
-        return state;
-    }
 }
