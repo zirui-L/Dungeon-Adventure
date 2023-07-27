@@ -2,9 +2,10 @@ package dungeonmania.entities;
 
 import dungeonmania.Game;
 import dungeonmania.entities.buildables.Bow;
+import dungeonmania.entities.buildables.MidnightArmour;
+import dungeonmania.entities.buildables.Sceptre;
 import dungeonmania.entities.buildables.Shield;
 import dungeonmania.entities.collectables.*;
-import dungeonmania.entities.collectables.Sword;
 import dungeonmania.entities.enemies.*;
 import dungeonmania.entities.logics.LightBulb;
 import dungeonmania.entities.logics.SwitchDoor;
@@ -125,6 +126,19 @@ public class EntityFactory {
         return new Shield(shieldDurability, shieldDefence);
     }
 
+    public Sceptre buildSceptre() {
+        int sceptreDurability = config.optInt("mind_control_duration");
+        return new Sceptre(sceptreDurability);
+
+    }
+
+    public MidnightArmour buildMidnightArmour() {
+        double midnightArmourAttack = config.optInt("midnight_armour_attack");
+        double midnightArmourDefence = config.optInt("midnight_armour_defence");
+        return new MidnightArmour(midnightArmourAttack, midnightArmourDefence);
+
+    }
+
     private Entity constructEntity(JSONObject jsonEntity, JSONObject config) {
         Position pos = new Position(jsonEntity.getInt("x"), jsonEntity.getInt("y"));
         String logic = null;
@@ -187,6 +201,8 @@ public class EntityFactory {
             return new SwitchDoor(pos, logic);
         case "wire":
             return new Wire(pos);
+        case "sun_stone":
+            return new SunStone(pos);
         default:
             return null;
         }

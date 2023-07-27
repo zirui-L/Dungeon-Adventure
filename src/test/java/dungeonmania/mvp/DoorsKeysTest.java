@@ -159,4 +159,51 @@ public class DoorsKeysTest {
         res = dmc.tick(Direction.LEFT);
         assertNotEquals(pos, TestUtils.getEntities(res, "player").get(0).getPosition());
     }
+
+    @Test
+    @Tag("4-8")
+    @DisplayName("Test player can use a sun stone to open and walk through a door")
+    public void useSunStoneWalkThroughOpenDoor() {
+        DungeonManiaController dmc;
+        dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame("d_DoorsKeysTest_useSunStoneWalkThroughOpenDoor",
+                "c_DoorsKeysTest_useSunStoneWalkThroughOpenDoor");
+
+        // pick up sun stone
+        res = dmc.tick(Direction.RIGHT);
+        Position pos = TestUtils.getEntities(res, "player").get(0).getPosition();
+        assertEquals(1, TestUtils.getInventory(res, "sun_stone").size());
+
+        // walk through door and check sun stone is remained
+        res = dmc.tick(Direction.RIGHT);
+        assertEquals(1, TestUtils.getInventory(res, "sun_stone").size());
+        assertNotEquals(pos, TestUtils.getEntities(res, "player").get(0).getPosition());
+    }
+
+    @Test
+    @Tag("4-9")
+    @DisplayName("Test player can use a sun stone to open and walk through multiple doors")
+    public void useSunStoneWalkThroughOpenMultipleDoors() {
+        DungeonManiaController dmc;
+        dmc = new DungeonManiaController();
+        DungeonResponse res = dmc.newGame("d_DoorsKeysTest_useSunStoneWalkThroughOpenMultipleDoors",
+                "c_DoorsKeysTest_useSunStoneWalkThroughOpenMultipleDoors");
+
+        // pick up sun stone
+        res = dmc.tick(Direction.RIGHT);
+        Position pos = TestUtils.getEntities(res, "player").get(0).getPosition();
+        assertEquals(1, TestUtils.getInventory(res, "sun_stone").size());
+
+        // walk through the first door and check sun stone is remained
+        res = dmc.tick(Direction.RIGHT);
+        assertEquals(1, TestUtils.getInventory(res, "sun_stone").size());
+        assertNotEquals(pos, TestUtils.getEntities(res, "player").get(0).getPosition());
+        pos = TestUtils.getEntities(res, "player").get(0).getPosition();
+
+        // walk through the second door and check sun stone is remained
+        res = dmc.tick(Direction.RIGHT);
+        assertEquals(1, TestUtils.getInventory(res, "sun_stone").size());
+        assertNotEquals(pos, TestUtils.getEntities(res, "player").get(0).getPosition());
+    }
+
 }

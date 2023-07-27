@@ -9,8 +9,12 @@ import dungeonmania.entities.Entity;
 import dungeonmania.entities.EntityFactory;
 import dungeonmania.entities.Player;
 import dungeonmania.entities.buildables.Bow;
+import dungeonmania.entities.buildables.MidnightArmour;
+import dungeonmania.entities.buildables.Sceptre;
+import dungeonmania.entities.buildables.Shield;
 import dungeonmania.entities.collectables.Arrow;
 import dungeonmania.entities.collectables.Key;
+import dungeonmania.entities.collectables.SunStone;
 import dungeonmania.entities.collectables.Sword;
 import dungeonmania.entities.collectables.Treasure;
 import dungeonmania.entities.collectables.Wood;
@@ -33,6 +37,8 @@ public class Inventory {
         int arrows = count(Arrow.class);
         int treasure = count(Treasure.class);
         int keys = count(Key.class);
+        int sunStone = count(SunStone.class);
+        int sword = count(Sword.class);
         List<String> result = new ArrayList<>();
 
         if (wood >= 1 && arrows >= 3) {
@@ -41,37 +47,33 @@ public class Inventory {
         if (wood >= 2 && (treasure >= 1 || keys >= 1)) {
             result.add("shield");
         }
+        if ((wood >= 1 || arrows >= 2) && sunStone >= 1
+        && (sunStone >= 2 || treasure >= 1 || keys >= 1)) {
+            result.add("sceptre");
+        }
+        if (sword >= 1 && sunStone >= 1) {
+            result.add("midnight_armour");
+        }
         return result;
     }
 
-    public InventoryItem checkBuildCriteria(Player p, boolean remove, boolean forceShield, EntityFactory factory) {
-
-        List<Wood> wood = getEntities(Wood.class);
-        List<Arrow> arrows = getEntities(Arrow.class);
-        List<Treasure> treasure = getEntities(Treasure.class);
-        List<Key> keys = getEntities(Key.class);
-
-        if (wood.size() >= 1 && arrows.size() >= 3 && !forceShield) {
-            if (remove) {
-                items.remove(wood.get(0));
-                items.remove(arrows.get(0));
-                items.remove(arrows.get(1));
-                items.remove(arrows.get(2));
+    public InventoryItem checkBuildCriteria(Player p, boolean remove, String itemString, EntityFactory factory) {
+        switch (itemString) {
+            case "bow":
+                if (Bow.checkBuildCriteria(remove, items)) return factory.buildBow();
+                break;
+            case "shield":
+                if (Shield.checkBuildCriteria(remove, items)) return factory.buildShield();
+                break;
+            case "midnight_armour":
+                if (MidnightArmour.checkBuildCriteria(p, remove, items)) return factory.buildMidnightArmour();
+                break;
+            case "sceptre":
+                if (Sceptre.checkBuildCriteria(remove, items)) return factory.buildSceptre();
+                break;
+            default:
+                break;
             }
-            return factory.buildBow();
-
-        } else if (wood.size() >= 2 && (treasure.size() >= 1 || keys.size() >= 1)) {
-            if (remove) {
-                items.remove(wood.get(0));
-                items.remove(wood.get(1));
-                if (treasure.size() >= 1) {
-                    items.remove(treasure.get(0));
-                } else {
-                    items.remove(keys.get(0));
-                }
-            }
-            return factory.buildShield();
-        }
         return null;
     }
 
@@ -116,4 +118,12 @@ public class Inventory {
         return weapon;
     }
 
+    public boolean hasSceptre() {
+        return getFirst(Sceptre.class) != null;
+    }
+
+    public Sceptre getSceptre() {
+        Sceptre sceptre = getFirst(Sceptre.class);
+        return sceptre;
+    }
 }

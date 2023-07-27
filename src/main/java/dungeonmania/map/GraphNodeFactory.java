@@ -30,6 +30,9 @@ public class GraphNodeFactory {
         case "spider":
         case "door":
         case "key":
+        case "sun_stone":
+        case "sceptre":
+        case "midnight_armour":
         case "light_bulb_off":
         case "switch_door":
         case "wire":
