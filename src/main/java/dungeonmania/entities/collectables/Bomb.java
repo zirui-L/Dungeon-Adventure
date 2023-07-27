@@ -51,11 +51,6 @@ public class Bomb extends LogicItem implements InventoryItem {
     }
 
     @Override
-    public boolean canMoveOnto(GameMap map, Entity entity) {
-        return true;
-    }
-
-    @Override
     public void onOverlap(GameMap map, Entity entity) {
         if (state != State.SPAWNED)
             return;
@@ -64,12 +59,16 @@ public class Bomb extends LogicItem implements InventoryItem {
                 return;
             subs.stream().forEach(s -> s.unsubscribe(this));
             map.destroyEntity(this);
+            this.state = State.INVENTORY;
         }
-        this.state = State.INVENTORY;
+
     }
 
     public void onPutDown(GameMap map, Position p) {
-        translate(Position.calculatePositionBetween(getPosition(), p));
+        Position offset = Position.calculatePositionBetween(getPosition(), p);
+
+        this.setPosition(Position.translateBy(this.getPosition(), offset));
+
         map.addEntity(this);
         this.state = State.PLACED;
         List<Position> adjPosList = getPosition().getCardinallyAdjacentPositions();
@@ -93,5 +92,12 @@ public class Bomb extends LogicItem implements InventoryItem {
             }
         }
     }
+
+
+    @Override
+    public boolean canMoveOnto(GameMap map, Entity entity) {
+        return true;
+    }
+
 
 }

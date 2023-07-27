@@ -19,4 +19,10 @@ public abstract class Collectable extends Entity implements InventoryItem {
             map.destroyEntity(this);
         }
     }
+
+    @Override
+    public boolean canMoveOnto(GameMap map, Entity entity) {
+        return true;
+    }
+
 }
