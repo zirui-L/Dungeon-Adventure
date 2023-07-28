@@ -3,6 +3,7 @@ package dungeonmania.entities;
 import dungeonmania.map.GameMap;
 import dungeonmania.util.Position;
 
+import java.util.List;
 import java.util.UUID;
 
 public abstract class Entity {
@@ -61,5 +62,24 @@ public abstract class Entity {
         if (!previousPosition.equals(this.position)) {
             previousDistinctPosition = previousPosition;
         }
+    }
+
+    public int getX() {
+        return position.getX();
+    }
+
+    public int getY() {
+        return position.getY();
+    }
+
+    public List<Position> getCardinallyAdjacentPositions() {
+        return position.getCardinallyAdjacentPositions();
+    }
+
+    public List<Position> getAdjacentPositions() {
+        return position.getAdjacentPositions();
+    }
+    public boolean isWithinRadius(Position other, int radius) {
+        return position.isWithinRadius(other, radius);
     }
 }

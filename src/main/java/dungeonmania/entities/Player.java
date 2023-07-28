@@ -5,10 +5,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
+import dungeonmania.Game;
 import dungeonmania.battles.BattleStatistics;
 import dungeonmania.battles.Battleable;
 import dungeonmania.entities.buildables.Sceptre;
 import dungeonmania.entities.collectables.Bomb;
+import dungeonmania.entities.collectables.Key;
 import dungeonmania.entities.collectables.Treasure;
 import dungeonmania.entities.collectables.potions.Potion;
 import dungeonmania.entities.enemies.Enemy;
@@ -96,7 +98,7 @@ public class Player extends Entity implements Battleable {
                 if (((Mercenary) entity).isAllied())
                     return;
             }
-            map.getGame().battle(this, (Enemy) entity);
+            map.battle(this, (Enemy) entity);
         }
     }
 
@@ -192,4 +194,27 @@ public class Player extends Entity implements Battleable {
         return facing;
     }
 
+    public double getHealth() {
+        return battleStatistics.getHealth();
+    }
+
+    public void setHealth(double health) {
+        battleStatistics.setHealth(health);
+    }
+
+    public <T> List<T> getEntities(Class<T> clz) {
+        return inventory.getEntities(clz);
+    }
+
+    public void useWeapon(Game game) {
+        inventory.useWeapon(game);
+    }
+
+    public <T extends InventoryItem> T getFirst(Class<T> itemType) {
+        return inventory.getFirst(itemType);
+    }
+
+    public int getKeyNumber() {
+        return getFirst(Key.class).getnumber();
+    }
 }

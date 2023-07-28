@@ -10,7 +10,7 @@ public class AwayMove implements MoveMethod {
         GameMap map = game.getMap();
         Position enemyPosition = enemy.getPosition();
 
-        Position plrDiff = Position.calculatePositionBetween(map.getPlayer().getPosition(), enemyPosition);
+        Position plrDiff = Position.calculatePositionBetween(map.getPosition(), enemyPosition);
 
         Position moveX = (plrDiff.getX() >= 0) ? Position.translateBy(enemyPosition, Direction.RIGHT)
                 : Position.translateBy(enemyPosition, Direction.LEFT);

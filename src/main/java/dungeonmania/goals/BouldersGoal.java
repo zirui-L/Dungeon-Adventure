@@ -15,6 +15,6 @@ public class BouldersGoal extends VariableNode {
         if (game.getPlayer() == null)
             return false;
 
-        return game.getMap().getEntities(Switch.class).stream().allMatch(s -> s.isActivated());
+        return game.getEntities(Switch.class).stream().allMatch(s -> s.isActivated());
     }
 }

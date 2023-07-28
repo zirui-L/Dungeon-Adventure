@@ -66,11 +66,8 @@ public class Mercenary extends Enemy implements Interactable {
      * @return
      */
     private boolean canBeBribed(Player player) {
-        Position playerPosition = player.getPosition();
-        Position mercenaryPosition = this.getPosition();
-
         boolean canBribe = bribeRadius >= 0 && player.countEntityOfType(Treasure.class) >= bribeAmount
-                && playerPosition.isWithinRadius(mercenaryPosition, bribeRadius);
+                && player.isWithinRadius(getPosition(), bribeRadius);
         return canBribe || player.hasSceptre();
     }
 
@@ -119,13 +116,12 @@ public class Mercenary extends Enemy implements Interactable {
 
     @Override
     public void move(Game game) {
-        GameMap map = game.getMap();
 
         if (allied) {
             moveMethod = new AlliedMove();
-        } else if (map.getPlayer().getEffectivePotion() instanceof InvisibilityPotion) {
+        } else if (game.getEffectivePotion() instanceof InvisibilityPotion) {
             moveMethod = new RandomMove();
-        } else if (map.getPlayer().getEffectivePotion() instanceof InvincibilityPotion) {
+        } else if (game.getEffectivePotion() instanceof InvincibilityPotion) {
             moveMethod = new AwayMove();
         } else {
             moveMethod = new TowardsMove();

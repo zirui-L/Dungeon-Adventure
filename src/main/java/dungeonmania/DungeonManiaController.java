@@ -5,7 +5,6 @@ import java.util.List;
 import org.json.JSONException;
 
 import dungeonmania.entities.Entity;
-import dungeonmania.entities.Player;
 import dungeonmania.entities.buildables.Sceptre;
 import dungeonmania.entities.collectables.Bomb;
 import dungeonmania.entities.collectables.SunStone;
@@ -15,14 +14,11 @@ import dungeonmania.entities.collectables.potions.InvisibilityPotion;
 import dungeonmania.entities.enemies.Mercenary;
 import dungeonmania.entities.enemies.ZombieToast;
 import dungeonmania.entities.enemies.ZombieToastSpawner;
-import dungeonmania.entities.inventory.Inventory;
 import dungeonmania.exceptions.InvalidActionException;
-import dungeonmania.map.GameMap;
 import dungeonmania.response.models.DungeonResponse;
 import dungeonmania.response.models.ResponseBuilder;
 import dungeonmania.util.Direction;
 import dungeonmania.util.FileLoader;
-import dungeonmania.util.Position;
 
 /**
  * DO NOT CHANGE METHOD SIGNITURES OF THIS FILE
@@ -84,9 +80,7 @@ public class DungeonManiaController {
      * /game/tick/item
      */
     public DungeonResponse tick(String itemUsedId) throws IllegalArgumentException, InvalidActionException {
-        Player player = game.getPlayer();
-        Inventory inventory = player.getInventory();
-        Entity itemUsed = inventory.getEntity(itemUsedId);
+        Entity itemUsed = game.getUsedEntity(itemUsedId);
         if (itemUsed == null) {
             throw new InvalidActionException("itemUsed is not in the player's inventory");
         }
@@ -113,9 +107,8 @@ public class DungeonManiaController {
         if (!validBuildables.contains(buildable)) {
             throw new IllegalArgumentException("Only bow, shield, midnight_armour and sceptre can be built");
         }
-        GameMap map = game.getMap();
 
-        if (buildable.equals("midnight_armour") && map.getEntities(ZombieToast.class).size() != 0) {
+        if (buildable.equals("midnight_armour") && game.getEntities(ZombieToast.class).size() != 0) {
             throw new InvalidActionException("There are zombies currently in the dungeon");
         }
 
@@ -126,30 +119,27 @@ public class DungeonManiaController {
      * /game/interact
      */
     public DungeonResponse interact(String entityId) throws IllegalArgumentException, InvalidActionException {
-        GameMap map = game.getMap();
-        Entity entity = map.getEntity(entityId);
+        Entity entity = game.getEntity(entityId);
         if (entity == null) {
             throw new IllegalArgumentException("Entity is not a valid Entity");
         }
 
-        Player player = game.getPlayer();
-        Position entityPosition = entity.getPosition();
         if (entity instanceof ZombieToastSpawner) {
-            if (!entityPosition.isCardinallyAdjacent(player.getPosition())) {
+            if (!game.isCardinallyAdjacent(game.getEntityPosition(entityId), game.getPlayerPosition())) {
                 throw new InvalidActionException("The player is not cardinally adjacent to the spawner");
             }
-            if (player.getWeapon() == null) {
+            if (game.getWeapon() == null) {
                 throw new InvalidActionException("The player does not have a weapon");
             }
         } else if (entity instanceof Mercenary) {
-            Inventory inventory = player.getInventory();
-            if (inventory.getEntities(Sceptre.class).size() == 0) {
-                if (!entityPosition.isWithinRadius(player.getPosition(), ((Mercenary) entity).getBribeRadius())) {
+            if (game.getInventoryEntities(Sceptre.class).size() == 0) {
+                if (!game.isWithinRadius(game.getEntityPosition(entityId), game.getPlayerPosition(),
+                                                                            ((Mercenary) entity).getBribeRadius())) {
                     throw new InvalidActionException("The player is not within specified bribing "
                                                                                     + "radius to the mercenary");
                 }
-                if (((Mercenary) entity).getBribeAmount()
-                    > (inventory.getEntities(Treasure.class).size() - inventory.getEntities(SunStone.class).size())) {
+                if (((Mercenary) entity).getBribeAmount() > (game.getInventoryEntities(Treasure.class).size()
+                                                            - game.getInventoryEntities(SunStone.class).size())) {
                     throw new InvalidActionException("The player does not have enough gold to bribe the mercenary");
                 }
             }
