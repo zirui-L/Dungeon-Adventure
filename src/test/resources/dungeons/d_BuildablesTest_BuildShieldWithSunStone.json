@@ -18,8 +18,7 @@
         {
             "type": "sun_stone",
             "x": 4,
-            "y": 1,
-            "key": 1
+            "y": 1
         },
         {
             "type": "exit",
