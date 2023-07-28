@@ -19,7 +19,7 @@ public class ZombieToast extends Enemy {
     @Override
     public void move(Game game) {
         GameMap map = game.getMap();
-        if (map.getPlayer().getEffectivePotion() instanceof InvincibilityPotion) {
+        if (map.getEffectivePotion() instanceof InvincibilityPotion) {
             moveMethod = new AwayMove();
         } else {
             moveMethod = new RandomMove();

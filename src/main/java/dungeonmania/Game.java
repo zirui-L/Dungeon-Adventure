@@ -5,6 +5,7 @@ import java.util.PriorityQueue;
 import java.util.UUID;
 
 import dungeonmania.battles.BattleFacade;
+import dungeonmania.entities.BattleItem;
 import dungeonmania.entities.Entity;
 import dungeonmania.entities.EntityFactory;
 import dungeonmania.entities.Interactable;
@@ -14,10 +15,13 @@ import dungeonmania.entities.collectables.potions.Potion;
 import dungeonmania.entities.enemies.Enemy;
 import dungeonmania.entities.enemies.Mercenary;
 import dungeonmania.entities.enemies.ZombieToast;
+import dungeonmania.entities.enemies.ZombieToastSpawner;
+import dungeonmania.entities.inventory.InventoryItem;
 import dungeonmania.exceptions.InvalidActionException;
 import dungeonmania.goals.Goal;
 import dungeonmania.map.GameMap;
 import dungeonmania.util.Direction;
+import dungeonmania.util.Position;
 
 public class Game {
     private String id;
@@ -232,4 +236,74 @@ public class Game {
         return tickCount;
     }
 
+    public <T extends Entity> List<T> getEntities(Class<T> type) {
+        return map.getEntities(type);
+    }
+
+    public List<Entity> getEntities(Position p) {
+        return map.getEntities(p);
+    }
+
+    public void remove(InventoryItem inventoryItem) {
+        player.remove(inventoryItem);
+    }
+
+    public Potion getEffectivePotion() {
+        return player.getEffectivePotion();
+    }
+
+    public boolean canMoveTo(Entity entity, Position position) {
+        return map.canMoveTo(entity, position);
+    }
+
+    public void moveTo(Entity entity, Position position) {
+        map.moveTo(entity, position);
+    }
+
+    public Position getPlayerPosition() {
+        return player.getPosition();
+    }
+
+    public Position dijkstraPathFind(Position src, Position dest, Entity entity) {
+        return map.dijkstraPathFind(src, dest, entity);
+    }
+
+    public void spawnZombie(Game game, ZombieToastSpawner spawner) {
+        entityFactory.spawnZombie(game, spawner);
+    }
+
+    public void destroyEntity(Entity entity) {
+        map.destroyEntity(entity);
+    }
+
+    public void addEntity(Entity entity) {
+        map.addEntity(entity);
+    }
+
+    public Entity getUsedEntity(String itemUsedId) {
+        return player.getEntity(itemUsedId);
+    }
+
+    public Entity getEntity(String id) {
+        return map.getEntity(id);
+    }
+    public BattleItem getWeapon() {
+        return player.getWeapon();
+    }
+
+    public <T> List<T> getInventoryEntities(Class<T> clz) {
+        return player.getEntities(clz);
+    }
+
+    public Position getEntityPosition(String id) {
+        return getEntity(id).getPosition();
+    }
+
+    public boolean isCardinallyAdjacent(Position a, Position b) {
+        return a.isCardinallyAdjacent(b);
+    }
+
+    public boolean isWithinRadius(Position a, Position b, int radius) {
+        return a.isWithinRadius(b, radius);
+    }
 }

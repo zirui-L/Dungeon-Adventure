@@ -12,6 +12,7 @@ import dungeonmania.entities.Entity;
 import dungeonmania.entities.Player;
 import dungeonmania.entities.Portal;
 import dungeonmania.entities.Switch;
+import dungeonmania.entities.collectables.potions.Potion;
 import dungeonmania.entities.enemies.Enemy;
 import dungeonmania.entities.enemies.ZombieToastSpawner;
 import dungeonmania.entities.logics.LogicItem;
@@ -309,5 +310,21 @@ public class GameMap {
 
     public void setGame(Game game) {
         this.game = game;
+    }
+
+    public Position getPosition() {
+        return player.getPosition();
+    }
+
+    public void battle(Player player, Enemy enemy) {
+        game.battle(player, enemy);
+    }
+
+    public void unsubscribe(String id) {
+        game.unsubscribe(id);
+    }
+
+    public Potion getEffectivePotion() {
+        return game.getEffectivePotion();
     }
 }

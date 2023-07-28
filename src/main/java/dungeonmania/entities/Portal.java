@@ -40,7 +40,7 @@ public class Portal extends Entity {
     }
 
     private void doTeleport(GameMap map, Entity entity) {
-        Position destination = pair.getPosition().getCardinallyAdjacentPositions().stream()
+        Position destination = pair.getCardinallyAdjacentPositions().stream()
                 .filter(dest -> map.canMoveTo(entity, dest)).findAny().orElse(null);
         if (destination != null) {
             map.moveTo(entity, destination);
@@ -53,7 +53,7 @@ public class Portal extends Entity {
 
     public List<Position> getDestPositions(GameMap map, Entity entity) {
         return pair == null ? null
-                : pair.getPosition().getAdjacentPositions().stream().filter(p -> map.canMoveTo(entity, p))
+                : pair.getAdjacentPositions().stream().filter(p -> map.canMoveTo(entity, p))
                         .collect(Collectors.toList());
     }
 
